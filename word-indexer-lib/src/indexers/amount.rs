@@ -27,6 +27,11 @@ fn trim_non_digit(text: &str) -> String {
 }
 
 pub fn index(word: Word) -> Option<Decimal> {
+    // TODO: Work on lines and divide lines into parsing units based on char distance
+    // TODO: Return location with result (Round coordinates to 3 decimals for deterministic results)
+    // TODO: Different locales, different currencies
+    // TODO: Parse multiple amounts in 1 parsing unit
+
     let trimmed = trim_non_digit(&word.text);
     return match Money::from_str(&trimmed, iso::USD) {
         Ok(v) => Some(v.amount().to_owned()),
