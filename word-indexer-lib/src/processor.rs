@@ -5,7 +5,7 @@ pub fn index_amounts(page: Page) -> Vec<f64> {
 
     for word in page.words {
         let Some(parsed) = indexers::amount::index(word) else { continue; };
-        result.push(parsed);
+        result.push(parsed.try_into().unwrap());
     }
 
     return result;

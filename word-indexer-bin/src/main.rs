@@ -4,9 +4,9 @@ use word_indexer_lib::{
     processor,
 };
 
-fn create_character_from_string(char: &char) -> Character {
+fn create_character_from_string(char: char) -> Character {
     return Character {
-        unicode_data: char.to_string(),
+        unicode_data: char,
         x: 0.0,
         y: 0.0,
         width: 5.0,
@@ -23,10 +23,7 @@ fn create_word_from_string(word: &str) -> Word {
         width: word.len() as f64 * 5.0,
         height: 10.0,
         angle: 0.0,
-        characters: word
-            .chars()
-            .map(|s| create_character_from_string(&s))
-            .collect(),
+        characters: word.chars().map(create_character_from_string).collect(),
     };
 }
 
@@ -48,4 +45,28 @@ fn main() {
     };
 
     dbg!(processor::index_amounts(page));
+}
+
+#[cfg(test)]
+pub mod integration_tests {
+    use rstest::rstest;
+    use word_indexer_lib::{
+        models::{Page, Word},
+        processor,
+    };
+
+    #[rstest]
+    #[case("This has 1,003.28 as the single number", vec![1_003.28])]
+    #[case("This has 1,003.28 and 837,291.37 as multiple numbers", vec![1_003.28, 837_291.37])]
+    fn monetary_amount(#[case] sentence: &str, #[case] expected: Vec<f64>) {
+        let words: Vec<Word> = crate::create_words_from_sentence(sentence);
+
+        let page: Page = Page {
+            page_number: 1,
+            words,
+        };
+
+        let actual = processor::index_amounts(page);
+        assert_eq!(expected, actual);
+    }
 }

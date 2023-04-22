@@ -7,3 +7,6 @@ edition = "2021"
 
 [dependencies]
 word-indexer-lib = { path = "../word-indexer-lib" }
+
+[dev-dependencies]
+rstest = "0.17.0"
