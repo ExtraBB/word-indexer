@@ -1,4 +1,4 @@
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub struct Character {
     pub unicode_data: char,
     pub x: f64,
@@ -8,7 +8,7 @@ pub struct Character {
     pub angle: f64,
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub struct Word {
     pub text: String, // Optimize out to reduce memory usage
     pub x: f64,
@@ -19,7 +19,8 @@ pub struct Word {
     pub characters: Vec<Character>,
 }
 
-#[derive(Debug)]
+// todo remove
+#[derive(Debug, PartialEq)]
 pub struct Page {
     pub page_number: u32,
     pub words: Vec<Word>,
