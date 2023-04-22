@@ -1,0 +1,6 @@
+[workspace]
+
+members = [
+    "word-indexer-bin",
+    "word-indexer-lib"
+]
