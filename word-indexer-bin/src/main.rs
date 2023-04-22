@@ -57,7 +57,9 @@ pub mod integration_tests {
 
     #[rstest]
     #[case("This has 1,003.28 as the single number", vec![1_003.28])]
+    #[case("This has 1,003.28; as the single number with trailing punctuation", vec![1_003.28])]
     #[case("This has 1,003.28 and 837,291.37 as multiple numbers", vec![1_003.28, 837_291.37])]
+    #[case("This has some1,003.28within text", vec![1_003.28])]
     fn monetary_amount(#[case] sentence: &str, #[case] expected: Vec<f64>) {
         let words: Vec<Word> = crate::create_words_from_sentence(sentence);
 
