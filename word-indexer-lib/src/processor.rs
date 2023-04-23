@@ -10,11 +10,8 @@ pub fn index_amounts(words: Vec<Word>) -> Vec<Decimal> {
     for line in lines {
         let line_segments = partitioners::line_segment::partition(line);
         for line_segment in line_segments {
-            // Todo parse segment as a whole
-            for word in line_segment.words {
-                let mut amounts = indexers::amount::parse_amounts(&word.text);
-                result.append(&mut amounts);
-            }
+            let mut amounts = indexers::amount::parse_amounts(&line_segment.text);
+            result.append(&mut amounts);
         }
     }
 
