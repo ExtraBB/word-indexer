@@ -14,6 +14,8 @@ fn overlap(a1: f64, a2: f64, b1: f64, b2: f64, threshold: f64) -> bool {
 }
 
 pub fn partition(words: Vec<Word>) -> Vec<Line> {
+    // TODO: use word angle
+
     let mut partial_lines: Vec<Line> = Vec::new();
 
     for word in words {
@@ -53,23 +55,11 @@ pub fn partition(words: Vec<Word>) -> Vec<Line> {
 }
 
 #[cfg(test)]
-pub mod line_tests {
-    use crate::assert_eq_f64;
+pub mod partitioners_line_tests {
+    use crate::{assert_eq_f64, test_utils::create_test_word};
 
     use super::*;
     use rstest::rstest;
-
-    fn create_test_word(text: String, x: f64, y: f64, width: f64, height: f64) -> Word {
-        Word {
-            text,
-            x,
-            y,
-            width,
-            height,
-            angle: 0.0,
-            characters: Vec::new(),
-        }
-    }
 
     #[rstest]
     fn partition_empty_words() {
@@ -79,7 +69,7 @@ pub mod line_tests {
 
     #[rstest]
     fn partition_single_word_single_line() {
-        let word = create_test_word(String::from("word1"), 10.0, 10.0, 100.0, 10.0);
+        let word = create_test_word(String::from("word1"), 10.0, 10.0, 100.0, 10.0, 0.0);
         let actual = partition(vec![word]);
 
         assert_eq!(1, actual.len());
@@ -90,9 +80,9 @@ pub mod line_tests {
 
     #[rstest]
     fn partition_multiple_words_single_line_happy_case() {
-        let word1 = create_test_word(String::from("word1"), 10.0, 10.0, 100.0, 10.0);
-        let word2 = create_test_word(String::from("word2"), 110.0, 10.0, 200.0, 10.0);
-        let word3 = create_test_word(String::from("word3"), 300.0, 10.0, 340.0, 10.0);
+        let word1 = create_test_word(String::from("word1"), 10.0, 10.0, 100.0, 10.0, 0.0);
+        let word2 = create_test_word(String::from("word2"), 110.0, 10.0, 200.0, 10.0, 0.0);
+        let word3 = create_test_word(String::from("word3"), 300.0, 10.0, 340.0, 10.0, 0.0);
         let actual = partition(vec![word1, word2, word3]);
 
         assert_eq!(1, actual.len());
@@ -105,9 +95,9 @@ pub mod line_tests {
 
     #[rstest]
     fn partition_multiple_words_single_line_wrong_order() {
-        let word1 = create_test_word(String::from("word1"), 10.0, 10.0, 100.0, 10.0);
-        let word2 = create_test_word(String::from("word2"), 300.0, 10.0, 340.0, 10.0);
-        let word3 = create_test_word(String::from("word3"), 110.0, 10.0, 200.0, 10.0);
+        let word1 = create_test_word(String::from("word1"), 10.0, 10.0, 100.0, 10.0, 0.0);
+        let word2 = create_test_word(String::from("word2"), 300.0, 10.0, 340.0, 10.0, 0.0);
+        let word3 = create_test_word(String::from("word3"), 110.0, 10.0, 200.0, 10.0, 0.0);
         let actual = partition(vec![word1, word2, word3]);
 
         assert_eq!(1, actual.len());
@@ -120,9 +110,9 @@ pub mod line_tests {
 
     #[rstest]
     fn partition_multiple_words_single_line_not_exact() {
-        let word1 = create_test_word(String::from("word1"), 10.0, 10.1, 100.0, 9.8);
-        let word2 = create_test_word(String::from("word2"), 110.0, 9.9, 200.0, 10.3);
-        let word3 = create_test_word(String::from("word3"), 300.0, 10.2, 340.0, 9.6);
+        let word1 = create_test_word(String::from("word1"), 10.0, 10.1, 100.0, 9.8, 0.0);
+        let word2 = create_test_word(String::from("word2"), 110.0, 9.9, 200.0, 10.3, 0.0);
+        let word3 = create_test_word(String::from("word3"), 300.0, 10.2, 340.0, 9.6, 0.0);
         let actual = partition(vec![word1, word2, word3]);
 
         assert_eq!(1, actual.len());
@@ -135,9 +125,9 @@ pub mod line_tests {
 
     #[rstest]
     fn partition_multiple_words_multiple_lines_far() {
-        let word1 = create_test_word(String::from("word1"), 10.0, 10.1, 100.0, 9.8);
-        let word2 = create_test_word(String::from("word2"), 110.0, 9.9, 200.0, 10.3);
-        let word3 = create_test_word(String::from("word3"), 300.0, 50.2, 340.0, 9.6);
+        let word1 = create_test_word(String::from("word1"), 10.0, 10.1, 100.0, 9.8, 0.0);
+        let word2 = create_test_word(String::from("word2"), 110.0, 9.9, 200.0, 10.3, 0.0);
+        let word3 = create_test_word(String::from("word3"), 300.0, 50.2, 340.0, 9.6, 0.0);
         let actual = partition(vec![word1, word2, word3]);
 
         assert_eq!(2, actual.len());
@@ -156,9 +146,9 @@ pub mod line_tests {
 
     #[rstest]
     fn partition_multiple_words_multiple_lines_close() {
-        let word1 = create_test_word(String::from("word1"), 10.0, 10.1, 100.0, 9.8);
-        let word2 = create_test_word(String::from("word2"), 110.0, 9.9, 200.0, 10.3);
-        let word3 = create_test_word(String::from("word3"), 300.0, 17.5, 340.0, 10.0);
+        let word1 = create_test_word(String::from("word1"), 10.0, 10.1, 100.0, 9.8, 0.0);
+        let word2 = create_test_word(String::from("word2"), 110.0, 9.9, 200.0, 10.3, 0.0);
+        let word3 = create_test_word(String::from("word3"), 300.0, 17.5, 340.0, 10.0, 0.0);
         let actual = partition(vec![word1, word2, word3]);
 
         assert_eq!(2, actual.len());

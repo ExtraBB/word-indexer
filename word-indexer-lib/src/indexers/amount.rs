@@ -26,7 +26,7 @@ fn trim_non_digit(text: &str) -> String {
     return result[start..end].into_iter().collect();
 }
 
-pub fn index(word: Word) -> Option<Decimal> {
+pub fn index_word(word: Word) -> Option<Decimal> {
     // TODO: Work on lines and divide lines into parsing units based on char distance
     // TODO: Return location with result (Round coordinates to 3 decimals for deterministic results)
     // TODO: Different locales, different currencies
@@ -37,4 +37,29 @@ pub fn index(word: Word) -> Option<Decimal> {
         Ok(v) => Some(v.amount().to_owned()),
         Err(_) => None,
     };
+}
+
+pub fn index_segment(word: Word) -> Option<Decimal> {
+    // TODO: Return location with result (Round coordinates to 3 decimals for deterministic results)
+    // TODO: Different locales, different currencies
+
+    let trimmed = trim_non_digit(&word.text);
+    return match Money::from_str(&trimmed, iso::USD) {
+        Ok(v) => Some(v.amount().to_owned()),
+        Err(_) => None,
+    };
+}
+
+#[cfg(test)]
+pub mod indexers_amount_tests {
+    use crate::{assert_eq_f64, models::Character};
+
+    use super::*;
+    use rstest::rstest;
+
+    #[rstest]
+    fn partition_empty_words() {
+        // let actual = partition(Vec::new());
+        // assert_eq!(0, actual.len());
+    }
 }
