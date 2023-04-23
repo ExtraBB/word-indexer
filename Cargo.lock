@@ -584,6 +584,7 @@ name = "word-indexer-bin"
 version = "0.1.0"
 dependencies = [
  "rstest",
+ "rust_decimal",
  "word-indexer-lib",
 ]
 
