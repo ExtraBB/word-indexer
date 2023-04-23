@@ -13,8 +13,9 @@ pub struct LineSegment {
 }
 
 fn words_are_adjacent(a: &Word, b: &Word) -> bool {
+    // Consider words adjacent if less than 2 character widths apart
     let distance = f64::abs(b.x - (a.x + a.width));
-    return distance <= (a.width + b.width) / (a.text.len() + b.text.len()) as f64;
+    return distance <= (a.width + b.width) / (a.text.len() + b.text.len()) as f64 * 2.0;
 }
 
 pub fn partition(line: Line) -> Vec<LineSegment> {
@@ -127,8 +128,8 @@ pub mod partitioners_line_segment_tests {
     fn partition_multiple_segments() {
         let word1 = create_test_word(String::from("word1"), 10.0, 10.0, 50.0, 10.0, 0.0);
         let word2 = create_test_word(String::from("word2"), 61.0, 10.0, 50.0, 10.0, 0.0);
-        let word3 = create_test_word(String::from("word3"), 130.0, 10.0, 50.0, 10.0, 0.0);
-        let word4 = create_test_word(String::from("word4"), 181.0, 10.0, 50.0, 10.0, 0.0);
+        let word3 = create_test_word(String::from("word3"), 140.0, 10.0, 50.0, 10.0, 0.0);
+        let word4 = create_test_word(String::from("word4"), 191.0, 10.0, 50.0, 10.0, 0.0);
         let line = Line {
             words: vec![word1, word2, word3, word4],
             top: 0.0,
@@ -147,8 +148,8 @@ pub mod partitioners_line_segment_tests {
         assert_eq!("word2", &actual[0].words[1].text);
 
         // Segment 2
-        assert_eq!(130.0, actual[1].left);
-        assert_eq!(231.0, actual[1].right);
+        assert_eq!(140.0, actual[1].left);
+        assert_eq!(241.0, actual[1].right);
         assert_eq!("word3word4", actual[1].text);
         assert_eq!("word3", &actual[1].words[0].text);
         assert_eq!("word4", &actual[1].words[1].text);
