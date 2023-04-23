@@ -1,9 +1,9 @@
-use crate::{indexers, models::Page};
+use crate::{indexers, models::Word};
 
-pub fn index_amounts(page: Page) -> Vec<f64> {
+pub fn index_amounts(words: Vec<Word>) -> Vec<f64> {
     let mut result: Vec<f64> = Vec::new();
 
-    for word in page.words {
+    for word in words {
         let Some(parsed) = indexers::amount::index(word) else { continue; };
         result.push(parsed.try_into().unwrap());
     }

@@ -18,10 +18,3 @@ pub struct Word {
     pub angle: f64,
     pub characters: Vec<Character>,
 }
-
-// todo remove
-#[derive(Debug, PartialEq)]
-pub struct Page {
-    pub page_number: u32,
-    pub words: Vec<Word>,
-}

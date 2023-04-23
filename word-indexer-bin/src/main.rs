@@ -1,5 +1,4 @@
 use word_indexer_lib::{
-    models::Page,
     models::{Character, Word},
     processor,
 };
@@ -39,21 +38,13 @@ fn main() {
         "Hello I am 12.4 years old and have 1,000.25 euros on 10-12-2022.",
     );
 
-    let page: Page = Page {
-        page_number: 1,
-        words,
-    };
-
-    dbg!(processor::index_amounts(page));
+    dbg!(processor::index_amounts(words));
 }
 
 #[cfg(test)]
 pub mod integration_tests {
     use rstest::rstest;
-    use word_indexer_lib::{
-        models::{Page, Word},
-        processor,
-    };
+    use word_indexer_lib::{models::Word, processor};
 
     #[rstest]
     #[case("This has 1,003.28 as the single number", vec![1_003.28])]
@@ -62,13 +53,7 @@ pub mod integration_tests {
     #[case("This has some1,003.28within text", vec![1_003.28])]
     fn monetary_amount(#[case] sentence: &str, #[case] expected: Vec<f64>) {
         let words: Vec<Word> = crate::create_words_from_sentence(sentence);
-
-        let page: Page = Page {
-            page_number: 1,
-            words,
-        };
-
-        let actual = processor::index_amounts(page);
+        let actual = processor::index_amounts(words);
         assert_eq!(expected, actual);
     }
 }
